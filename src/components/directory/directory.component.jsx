@@ -52,8 +52,10 @@ class Directory extends React.Component {
             //we want to map through our sections
             <div className='directory-menu'>
             {
-                this.state.sections.map(({ title, imageUrl, id, size }) =>
-                    <MenuItem key={id} title={title} imageUrl={imageUrl} size={size} />
+                //instead of adding all of the elements in the array u can use sectionprops
+                this.state.sections.map(({ id, ...otherSectionProps }) =>
+                    <MenuItem key={id} {...otherSectionProps} />
+                    // <MenuItem key={id} title={title} imageUrl={imageUrl} size={size} />
                 )
             }
             </div>
