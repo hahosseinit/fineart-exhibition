@@ -4,12 +4,7 @@ import 'firebase/compat/auth';
 // import { initializeApp } from "firebase/compat/app"
 
 const config = {
-    apiKey: "AIzaSyA8oqYJrdyuRx-3r15wrK_K6aZUJ8tsnsM",
-    authDomain: "fineart-db.firebaseapp.com",
-    projectId: "fineart-db",
-    storageBucket: "fineart-db.appspot.com",
-    messagingSenderId: "613458260207",
-    appId: "1:613458260207:web:104ecfa3a392e206ea6b1a"
+
 }
 
 firebase.initializeApp(config);
