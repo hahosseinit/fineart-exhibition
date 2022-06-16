@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import './App.css';
@@ -25,6 +25,7 @@ class App extends React.Component { //by having class instead of function we can
     unsubscribeFromAuth = null;
 
     componentDidMount() {
+        const {setCurrentUser} = this.props;
         this.unsubscribeFromAuth = auth.onAuthStateChanged( async userAuth => {
             // this.setState({ currentUser: user });
             // createUserProfileDocument(user);
@@ -34,20 +35,18 @@ class App extends React.Component { //by having class instead of function we can
             //    if our DB has updated add that reference with any new data
                 userRef.onSnapshot(snapShot => {
                 //get the data related to this user
-                    this.setState({
-                        currentuser: {
+                        setCurrentUser({
                             id: snapShot.id,
                             ...snapShot.data()
-                        }
-                    }, () => {
-                        console.log(this.state)
-                    });
+                        })
 
                     console.log(this.state)
                 })
 
             } else {
-                this.setState({currentUser: userAuth});
+                // this.setState({currentUser: userAuth});
+                // we just need that object that we wanna update it with
+                setCurrentUser(userAuth);
             }
         })
     }
@@ -60,23 +59,32 @@ class App extends React.Component { //by having class instead of function we can
         return (
             <div>
                 <Header />
-
-                {/*  switch does not load anything else but that route*/}
                 <Switch>
                     <Route exact path='/' component={HomePage} />
-                    <Route exact path='/shop' component={ShopPage} />
-                    <Route exact path='/signin' component={SignInAndSignUpPage} />
+                    <Route path='/shop' component={ShopPage} />
+                    <Route exact path='/signin'
+                           render={() =>
+                               this.props.currentUser ? (
+                                      <Redirect to='/' />
+                                   ) : (
+                                      <SignInAndSignUpPage />
+                                      )}
+                    />
                 </Switch>
             </div>
         );
     }
 }
 
+const mapStateToProps = ({ user }) => ({
+    currentUser: user.currentUser
+})
+
 const mapDispatchToProps = dispatch => ({
     setCurrentUser: user => dispatch(setCurrentUser(user))
 })
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(App);
