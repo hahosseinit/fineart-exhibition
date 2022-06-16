@@ -4,12 +4,11 @@ import { connect } from 'react-redux';
 
 import './App.css';
 
-
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import Header from './components/header/header.component'
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
-import { auth } from './firebase/firebase.utils';
+import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 
 import { setCurrentUser } from './redux/user/user.actions';
 
@@ -23,13 +22,33 @@ class App extends React.Component { //by having class instead of function we can
         }
     }
 
-    unsubscribeFromAuth = null
+    unsubscribeFromAuth = null;
 
     componentDidMount() {
-        this.unsubscribeFromAuth = auth.onAuthStateChanged( user => {
-            this.setState({ currentUser: user });
+        this.unsubscribeFromAuth = auth.onAuthStateChanged( async userAuth => {
+            // this.setState({ currentUser: user });
+            // createUserProfileDocument(user);
+            if (userAuth) {
+            //what we get back from our function is the userRef
+                const userRef = await createUserProfileDocument(userAuth);
+            //    if our DB has updated add that reference with any new data
+                userRef.onSnapshot(snapShot => {
+                //get the data related to this user
+                    this.setState({
+                        currentuser: {
+                            id: snapShot.id,
+                            ...snapShot.data()
+                        }
+                    }, () => {
+                        console.log(this.state)
+                    });
 
-            console.log(user);
+                    console.log(this.state)
+                })
+
+            } else {
+                this.setState({currentUser: userAuth});
+            }
         })
     }
 //our app being aware of any changes on firebase
