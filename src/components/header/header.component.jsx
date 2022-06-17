@@ -1,13 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { auth } from '../../firebase/firebase.utils';
 import { connect } from 'react-redux';
+
+import { auth } from '../../firebase/firebase.utils';
+import CartIcon from '../cart-icon/cart-icon.component';
+import CartDropdown from "../cart-dropdown/cart-dropdown.component";
+
 
 import { ReactComponent as Logo } from '../../assets/crown.svg'
 
 import './header.styles.scss';
 
-const Header = ({ currentUser }) => (
+const Header = ({ currentUser, hidden }) => (
     <div className='header'>
         <Link className='logo-container' to='/'>
             <Logo className='logo' />
@@ -28,12 +32,16 @@ const Header = ({ currentUser }) => (
                     SIGN IN
                 </Link>
             )}
+            <CartIcon />
         </div>
+        { hidden ? null : <CartDropdown /> }
     </div>
 );
 
-const mapStateToProps = state => ({ //this state is the root reducer
-    currentUser: state.user.currentUser
+const mapStateToProps = ({ user: { currentUser }, cart: { hidden }}) => ({ //this state is the root reducer // when u want nested value... iwant
+    // you give me this value from the user
+    currentUser,
+    hidden
 })
 
 export default connect(mapStateToProps)(Header);
