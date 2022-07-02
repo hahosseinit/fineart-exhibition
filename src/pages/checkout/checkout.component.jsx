@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from "reselect";
 
 import CheckoutItem from "../../components/checkout-item/checkout-item.component";
+import StripeChecoutButton from '../../components/stripe-button/stripe-button.component';
 
 import { selectCartItems, selectCartTotal } from "../../redux/cart/cart.selector";
 
@@ -35,6 +36,12 @@ const CheckoutPage = ({ cartItems, total }) => (
         <div className='total'>
             <span>Total: ${total}</span>
         </div>
+        <div className='test-warning'>
+            Please do not use the payment button. It is not complete yet.
+            <br />
+            You can email to Hamideh, hamideh.hosseini.t@gmail.com', if you like an artwork to buy! :))
+        </div>
+        <StripeChecoutButton price={total} />
     </div>
 );
 

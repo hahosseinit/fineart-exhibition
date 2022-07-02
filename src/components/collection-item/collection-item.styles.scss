@@ -1,5 +1,7 @@
 .collection-item {
-  width: 22%;
+  // vw nesbat be actual window mishe na nesbat be container (% mishe nesbat b container)
+  // So if we were to decrease or increase the window size, it would end up adapting as well
+  width: 22vw;
   display: flex;
   flex-direction: column;
   height: 350px;
