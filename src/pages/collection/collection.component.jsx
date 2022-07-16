@@ -9,7 +9,6 @@ import './collection.styles.scss';
 
 const CollectionPage = ({ collection, match }) => {
     console.log(`----- `, collection)
-    console.log(`--+--- `, match.params.collectionId)
     return (
         <div className='collection-page'>
             <h2 className='title'>{collection.title}</h2>

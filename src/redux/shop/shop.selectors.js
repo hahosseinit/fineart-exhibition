@@ -9,7 +9,8 @@ export const selectCollections = createSelector(
 
 export const selectCollectionsForPreview = createSelector(
     [selectCollections],
-    collections => Object.keys(collections).map(key => collections[key])
+    collections =>
+            collections ? Object.keys(collections).map(key => collections[key]) : []
 );
 
 export const selectollectionsForPreview = createSelector(
@@ -23,7 +24,7 @@ export const selectollectionsForPreview = createSelector(
 export const selectCollection = collectionUrlParam =>
     createSelector(
         [selectCollections],
-        collections => collections[collectionUrlParam]
+        (collections => collections ? collections[collectionUrlParam] : null)
         // collections => collections.find(
         //     // take ong time
         //     collection => collection.id === COLLECTION_ID_MAP[collectionUrlParam]

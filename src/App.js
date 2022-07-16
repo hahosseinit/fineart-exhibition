@@ -12,9 +12,10 @@ import Header from './components/header/header.component';
 // import Kilid from './pages/Kilid/Kilid.component';
 
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+import { auth, createUserProfileDocument, addCollectionAndDocuments } from './firebase/firebase.utils';
 import { setCurrentUser } from './redux/user/user.actions';
 import { selectCurrentUser } from "./redux/user/user.selector";
+import { selectCollectionsForPreview } from "./redux/shop/shop.selectors";
 
 
 class App extends React.Component { //by having class instead of function we can have access to state
@@ -29,7 +30,8 @@ class App extends React.Component { //by having class instead of function we can
     unsubscribeFromAuth = null;
 
     componentDidMount() {
-        const {setCurrentUser} = this.props;
+        const {setCurrentUser, collectionsArray} = this.props;
+        // const {setCurrentUser} = this.props;
         this.unsubscribeFromAuth = auth.onAuthStateChanged( async userAuth => {
             // this.setState({ currentUser: user });
             // createUserProfileDocument(user);
@@ -37,6 +39,9 @@ class App extends React.Component { //by having class instead of function we can
             //what we get back from our function is the userRef
                 const userRef = await createUserProfileDocument(userAuth);
             //    if our DB has updated add that reference with any new data
+            //    When you set a listener, Cloud Firestore sends your listener an initial snapshot of the data, and then another
+            //    snapshot each time the document changes. You can get an array of the document snapshots by using the docs property
+            //    of a QuerySnapshot.
                 userRef.onSnapshot(snapShot => {
                 //get the data related to this user
                         setCurrentUser({
@@ -51,6 +56,7 @@ class App extends React.Component { //by having class instead of function we can
                 // this.setState({currentUser: userAuth});
                 // we just need that object that we wanna update it with
                 setCurrentUser(userAuth);
+                addCollectionAndDocuments('collections', collectionsArray.map(({title, items}) => ({title, items})));
             }
         })
     }
@@ -65,7 +71,6 @@ class App extends React.Component { //by having class instead of function we can
                 <Header />
                 <Switch>
                     <Route exact path='/' component={HomePage} />
-                    {/*<Route exact path='/kilid' component={Kilid} />*/}
                     <Route path='/shop' component={ShopPage} />
                     <Route exact path='/checkout' component={CheckoutPage} />
                     <Route exact path='/signin'
@@ -83,7 +88,8 @@ class App extends React.Component { //by having class instead of function we can
 }
 
 const mapStateToProps = createStructuredSelector ({
-    currentUser: selectCurrentUser
+    currentUser: selectCurrentUser,
+    collectionsArray: selectCollectionsForPreview
 });
 
 // const mapStateToProps = ({ user }) => ({
